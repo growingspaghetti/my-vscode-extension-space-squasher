@@ -11,7 +11,7 @@ const squashImpl = vscode.window.createTextEditorDecorationType({
 
 const endLabel = vscode.window.createTextEditorDecorationType({
 	after: {
-		contentText: "//impl",
+		//contentText: "//impl",
 		color: "#448C27",
 		backgroundColor: "#ebebeb",
 		textDecoration: `
@@ -52,7 +52,7 @@ function activate(context) {
 		const arr = text.split('\n');
 		let inImplBlock = false;
 		for (let line = 0; line < arr.length; line++) {
-			if (arr[line].startsWith("impl")) {
+			if (arr[line].startsWith("impl") || arr[line] === ("mod tests {")) {
 				inImplBlock = true;
 				continue;
 			}
@@ -62,7 +62,7 @@ function activate(context) {
 					new vscode.Position(line, 0),
 					new vscode.Position(line, 1)
 				);
-				let decoration = { range: range, hoverMessage: 'end impl' };
+				let decoration = { range: range, hoverMessage: 'end impl or mod' };
 				labelling.push(decoration);
 				continue;
 			}
@@ -75,28 +75,9 @@ function activate(context) {
 				squashing.push(decoration);
 			}
 		}
-		//var regEx = /(?:    )(.*\n{0})/g;
-		// var spacing = [];
-		// var match;
-		// while (match = regEx.exec(text)) {
-		// 	var startPosSpacing = vscode.window.activeTextEditor.document.positionAt(match.index);
-		// 	var endPosSpacing = vscode.window.activeTextEditor.document.positionAt(match.index + match[1].length);
-		// 	var decorationSpacing = { range: new vscode.Range(startPosSpacing, endPosSpacing), hoverMessage: null };
-		// 	spacing.push(decorationSpacing);
-		// }
 		vscode.window.activeTextEditor.setDecorations(squashImpl, squashing);
 		vscode.window.activeTextEditor.setDecorations(endLabel, labelling);
 	}
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('letterspace.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from letterspace!');
-	});
-
-	context.subscriptions.push(disposable);
 }
 
 // This method is called when your extension is deactivated
